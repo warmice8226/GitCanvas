@@ -1,0 +1,8 @@
+/build/
+/build-linux/
+/build-macos-*/
+__pycache__/
+/out/
+/.qt/
+CMakeUserPresets.json
+

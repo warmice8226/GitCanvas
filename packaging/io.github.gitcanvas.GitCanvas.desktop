@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=GitCanvas
+Comment=A fast, cross-platform Git GUI
+Exec=GitCanvas
+Icon=io.github.gitcanvas.GitCanvas
+Categories=Development;RevisionControl;
+Terminal=false
+

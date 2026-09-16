@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>GitCanvas 사용 설명서</title>
+<style>
+:root{--bg:#f3f5f8;--paper:#fff;--ink:#233047;--muted:#58677c;--line:#dce3eb;--accent:#087e70;--soft:#e8f6f2;--warn:#fff3d8}
+:root[data-theme=dark]{--bg:#10151e;--paper:#18212d;--ink:#e5edf6;--muted:#a9b8cc;--line:#334155;--accent:#6ee7cb;--soft:#16382f;--warn:#40331b}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.8 "Segoe UI","Malgun Gothic",sans-serif;word-break:keep-all;overflow-wrap:anywhere}
+a{color:var(--accent);text-underline-offset:4px}button,input{font:inherit}button{cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:6px 13px}button:hover{border-color:var(--accent)}:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.shell{max-width:1340px;margin:auto;display:grid;grid-template-columns:250px minmax(0,1fr);gap:36px;padding:30px}
+aside{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow:auto;padding:8px 8px 20px 0}.brand{font-weight:800;font-size:24px;letter-spacing:-1px}.tag{color:var(--muted);font-size:13px}.search{display:block;width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:var(--paper);color:var(--ink);margin:8px 0}.search-label{display:block;margin-top:22px;font-size:14px}nav a{display:block;padding:6px 9px;text-decoration:none;border-radius:6px;color:var(--muted);font-size:14px}nav a:hover{background:var(--soft);color:var(--accent)}
+header{padding:25px 0 32px}h1{font-size:42px;line-height:1.25;letter-spacing:-1.8px;margin:12px 0 20px}h2{font-size:25px;line-height:1.4;margin:0 0 20px;letter-spacing:-.6px}h3{font-size:18px;margin:26px 0 10px}p{margin:10px 0}section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:32px;margin:0 0 22px}section[hidden]{display:none}.eyebrow{color:var(--accent);font-size:13px;font-weight:700;letter-spacing:2px}.lede{font-size:18px;color:var(--muted);max-width:680px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.note,.caution{padding:13px 17px;border-radius:8px;margin:18px 0;background:var(--soft)}.caution{background:var(--warn)}.small{font-size:14px;color:var(--muted)}
+ol,ul{padding-left:24px}li{margin:7px 0}.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:15px;margin:16px 0}th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:11px 12px}th{background:var(--soft)}th:first-child,td:first-child{min-width:120px}code{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:.92em;word-break:break-word}pre{white-space:pre-wrap;background:var(--bg);padding:15px;border-radius:8px;border:1px solid var(--line)}pre code{border:0;padding:0}.flow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:20px 0}.flow span{padding:8px 13px;background:var(--soft);border:1px solid var(--line);border-radius:8px}.flow b{color:var(--muted)}details{border-top:1px solid var(--line);padding:13px 0}summary{cursor:pointer;font-weight:600}footer{padding:10px 0 35px;color:var(--muted);font-size:14px}.skip{position:absolute;left:-9999px}.skip:focus{left:20px;top:10px;background:var(--paper);z-index:10}.empty{padding:24px;background:var(--paper);border-radius:12px}
+@media(max-width:850px){.shell{display:block;padding:18px}aside{position:static;max-height:none}nav{display:flex;gap:3px;flex-wrap:wrap}nav a{border:1px solid var(--line)}h1{font-size:34px}section{padding:23px}header{padding-top:15px}}
+@media print{ :root,:root[data-theme=dark]{--bg:#fff;--paper:#fff;--ink:#111;--muted:#444;--line:#ccc;--accent:#155b4e;--soft:#f1f6f4;--warn:#f8f3e8}body{font-size:11pt}.shell{display:block;padding:0;max-width:none}aside,.actions,.empty,.skip{display:none!important}section,section[hidden]{display:block!important;box-shadow:none;border-radius:0;padding:18px 0;border-width:0 0 1px}h1{font-size:28pt}h2,h3{break-after:avoid}table,.note,.caution{break-inside:avoid}a{color:inherit;text-decoration:none}footer{padding:10px 0}.table-wrap{overflow:visible}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 이동</a>
+<div class="shell">
+<aside aria-label="사용 설명서 목차">
+<div class="brand">GitCanvas<span style="color:var(--accent)">.</span></div>
+<div class="tag">사용 설명서 · Windows 프로토타입</div>
+<label class="search-label" for="search">설명서 검색</label>
+<input class="search" id="search" type="search" placeholder="예: 커밋, 경로, 충돌" aria-controls="main">
+<p id="search-status" class="small" role="status" aria-live="polite"></p>
+<nav aria-label="목차">
+<a href="#start">01 · 처음 실행하기</a><a href="#workspace">02 · 저장소와 화면</a><a href="#commit">03 · 변경 확인과 커밋</a><a href="#sync">04 · Fetch / Pull / Push</a><a href="#branch">05 · 브랜치 관리</a><a href="#history">06 · 커밋 기록과 비교</a><a href="#stash">07 · Stash와 파일 정리</a><a href="#merge">08 · 병합과 충돌 해결</a><a href="#recovery">09 · 이력 수정과 복구</a><a href="#github">10 · GitHub와 PR</a><a href="#tools">11 · Git Tools 명령 조립</a><a href="#advanced">12 · 그 밖의 Git Tools</a><a href="#ssh">13 · SSH 원격 작업공간</a><a href="#settings">14 · 설정·중단·로그</a><a href="#trouble">15 · 자주 막히는 상황</a><a href="#glossary">16 · 용어 사전</a>
+</nav>
+</aside>
+<main id="main">
+<header>
+<div class="eyebrow">USER GUIDE / 2026.09.15</div>
+<h1>변경 확인부터<br>협업과 복구까지.</h1>
+<p class="lede">Git 명령어를 외우지 않고 GitCanvas 화면으로 저장소를 관리하는 방법을 안내합니다. 처음이라면 1~4장을 순서대로 따라 해 보세요.</p>
+<div class="actions"><button id="theme" type="button">☀️ / 🌙 설명서 테마</button><button id="print" type="button">인쇄 / PDF 저장</button><button id="clear" type="button">검색 초기화</button></div>
+<p class="small">HTML 파일 하나로 오프라인 열람할 수 있습니다. 이 페이지의 테마는 앱 테마와 별개입니다. 인쇄하면 검색 결과와 관계없이 전체 설명서가 출력됩니다.</p>
+<noscript><p class="note">JavaScript가 꺼져 있어도 모든 내용을 읽을 수 있습니다. 검색 대신 브라우저의 찾기 기능을, 인쇄는 Ctrl+P를 사용하세요.</p></noscript>
+</header>
+<p id="empty" class="empty" hidden>검색 결과가 없습니다. 다른 단어를 입력하거나 검색을 초기화하세요.</p>
+
+<section id="start"><h2>01 · 처음 실행하기</h2>
+<ol><li>Windows x64 배포 ZIP을 <strong>전체 압축 해제</strong>합니다.</li><li><code>GitCanvas/bin/GitCanvas.exe</code>를 실행합니다. 실행 파일만 따로 옮기지 말고 DLL과 하위 폴더를 함께 유지합니다.</li><li>Workspace의 <strong>Git 환경 · 작성자 설정</strong>을 열어 Git 실행 여부와 버전을 확인합니다.</li><li>커밋에 기록할 이름과 이메일을 입력하고 저장합니다. 현재 저장소에만 적용하려면 <strong>Local</strong>, 다른 저장소에서도 사용할 기본값이라면 <strong>Global</strong>을 선택합니다.</li></ol>
+<div class="note">앱은 설치 없이 실행하지만, <strong>Git for Windows는 별도로 필요</strong>합니다. GitHub 로그인 도구는 Windows 배포본에 포함됩니다.</div>
+<p>Git 작성자 이름·이메일은 커밋에 남길 신원입니다. GitHub 로그인 계정과는 별도이므로, 로그인 후에도 작성자 설정을 확인하세요.</p>
+</section>
+
+<section id="workspace"><h2>02 · 저장소와 화면</h2>
+<div class="table-wrap"><table><thead><tr><th>시작 방법</th><th>사용하는 상황</th></tr></thead><tbody><tr><td>저장소 추가</td><td>이미 PC에 있는 Git 저장소 폴더를 등록합니다.</td></tr><tr><td>새 저장소</td><td>새 폴더나 파일이 있는 기존 프로젝트 폴더에 Git 저장소를 만듭니다. 초기 브랜치 이름을 지정합니다. 기존 파일은 그대로 유지됩니다.</td></tr><tr><td>Clone</td><td>원격 저장소 주소를 입력해 PC로 복제합니다. 처음에는 전체 Clone을 사용하면 됩니다. Shallow는 이력 깊이를 줄이고 Partial은 일부 파일 내용의 다운로드를 미룹니다.</td></tr></tbody></table></div>
+<p>새 저장소와 Clone은 성공하면 Workspace에 자동 등록되고 메인 화면에 완료 안내와 경로가 표시됩니다. 다른 Git 작업이 진행 중이면 완료 후 자동으로 엽니다. 자동 열기가 실패하거나 화면 전환을 취소해도 Workspace 등록은 유지됩니다. 새 저장소 생성은 기존 파일을 자동으로 Stage하거나 커밋하지 않습니다. Clone은 새 폴더나 빈 폴더를 지정하세요. 이미 Git 저장소인 폴더는 저장소 추가로 여세요.</p>
+<h3>등록한 저장소 관리</h3><ul><li>목록을 클릭하거나 Enter로 엽니다. 등록 경로와 순서는 재실행 후에도 유지됩니다.</li><li><strong>즐겨찾기</strong>로 상단에 배치합니다. 드래그 또는 ↑/↓로 같은 그룹 안에서 순서를 바꿉니다.</li><li>우클릭 메뉴에서 표시명 변경, 이동한 저장소의 경로 재지정, 목록 제거를 할 수 있습니다. 목록에서 제거해도 실제 폴더는 삭제되지 않습니다.</li></ul>
+<h3>화면 읽기</h3><ul><li>상단에는 저장소 정보, 브랜치 조작, <strong>로컬파일 새로고침 / 동기화 / 현재작업 중단</strong>이 있습니다.</li><li>아래 기능 탭에서 변경 사항, 커밋 기록, 작업 로그, 복구, Stash, 병합, Git Tools, GitHub를 선택합니다.</li><li>왼쪽 위 <strong>☀️ / 🌙 GitCanvas</strong>로 앱의 라이트·다크 테마를 바꿉니다.</li><li>제목표시줄을 끌어 창을 이동합니다. 기본창은 크기 조절·최대화가 가능하며 Windows 10에서는 오른쪽 아래 조절 핸들도 사용할 수 있습니다.</li></ul>
+</section>
+
+<section id="commit"><h2>03 · 변경 확인과 커밋</h2>
+<div class="flow" aria-label="커밋 순서"><span>파일 수정</span><b>→</b><span>변경 확인</span><b>→</b><span>Stage</span><b>→</b><span>커밋</span></div>
+<ol><li>편집기에서 파일을 수정하고 앱의 <strong>로컬파일 새로고침</strong>을 누릅니다.</li><li><strong>변경 사항</strong> 탭에서 작업 디렉터리의 <strong>▸</strong>를 눌러 목록을 펼칩니다. 두 파일 목록은 기본적으로 접혀 있습니다. <strong>⤢</strong>로 목록을 크게 보거나 기본 크기로 돌립니다.</li><li>파일명을 클릭해 오른쪽 Diff에서 변경 내용을 확인합니다. 체크박스는 작업 대상 선택용이며 파일명 클릭과 역할이 다릅니다.</li><li>체크한 파일을 <strong>Stage ↓</strong>로 커밋할 파일 목록에 넣습니다. <strong>전체파일 Stage</strong>는 체크 여부와 관계없이 전체 변경을 준비합니다.</li><li>제외할 변경은 커밋할 파일 목록에서 <strong>Unstage ↑</strong>합니다. 전체파일 Unstage도 사용할 수 있으며, 파일 수정 내용은 남습니다.</li><li>커밋할 파일 아래에 <strong>제목</strong>과 선택적인 <strong>상세 설명</strong>을 작성하고 <strong>커밋 만들기</strong>를 누릅니다.</li></ol>
+<div class="note"><strong>커밋은 커밋할 파일 목록 전체를 기록합니다.</strong> 체크한 파일만 커밋하는 방식이 아닙니다. 커밋은 PC에 기록하며, 원격에 올리려면 이후 Push가 필요합니다.</div>
+<h3>일부 변경만 기록하기</h3><p>Diff의 통합·나란히·쌓기형 보기로 변경을 확인하고, 지원하는 텍스트 파일에서는 구간 또는 추가·삭제 줄을 선택해 Stage/Unstage할 수 있습니다. 파일 목록은 왼쪽, Diff는 오른쪽이며 전체 배치 선택 기능은 없습니다. 외부에서 파일이 바뀌어 적용이 거부되면 새로고침 후 다시 선택하세요.</p>
+<h3>마지막 커밋 고치기 — Amend</h3><p>Amend는 새 커밋을 하나 더 만드는 대신 마지막 커밋을 교체합니다. 마지막 메시지를 불러와 수정하고 필요한 변경을 Stage한 뒤 적용합니다. 기존 작성자는 유지됩니다. 이미 공유한 커밋을 Amend하면 원격과 이력이 달라질 수 있습니다. 실수했다면 <a href="#recovery">이력 복구</a>에서 이전 커밋을 먼저 새 브랜치로 보존하세요.</p>
+</section>
+
+<section id="sync"><h2>04 · Fetch / Pull / Push</h2>
+<p>상단 동기화 버튼은 상태에 맞는 작업 하나를 표시합니다. 한 번 클릭하면 표시된 작업 하나를 수행합니다.</p>
+<div class="table-wrap"><table><thead><tr><th>버튼</th><th>무엇을 하나요?</th><th>파일에 미치는 영향</th></tr></thead><tbody><tr><td>Fetch</td><td>원격의 최신 커밋 정보를 가져와 내 브랜치와 비교합니다.</td><td>작업 파일에 원격 변경을 합치지는 않습니다.</td></tr><tr><td>Pull</td><td>원격에만 있는 커밋을 현재 브랜치로 받습니다.</td><td>현재 작업 파일이 갱신됩니다. 미완료 변경이 있으면 먼저 커밋하거나 Stash합니다.</td></tr><tr><td>Push</td><td>내 로컬 커밋을 연결된 원격 브랜치에 반영합니다.</td><td>원격 저장소가 갱신됩니다.</td></tr></tbody></table></div>
+<p>앱 시작·저장소 열기·브랜치 전환 후에는 <strong>Fetch부터</strong> 진행합니다. 원격만 앞서면 Pull, 로컬만 앞서면 Push, 같으면 Fetch가 표시됩니다. 로컬과 원격 모두에 새 커밋이 있으면 Push를 막고 먼저 병합 등으로 분기를 해결하도록 안내합니다. 자동으로 두 이력을 합치지는 않습니다.</p>
+<h3>원격 연결과 최초 Push</h3><ol><li>Workspace의 <strong>원격 · 브랜치 연결</strong>에서 remote 이름과 주소를 등록합니다. 일반적인 이름은 <code>origin</code>입니다.</li><li>현재 브랜치가 연결할 remote와 대상 원격 브랜치(upstream)를 지정합니다.</li><li>로컬에 첫 커밋을 만든 뒤 상단 Fetch를 실행합니다.</li><li>원격에 대상 브랜치가 없다면 최초 Push로 게시합니다. 원격 상태가 바뀌어 거부되면 다시 Fetch해 확인합니다.</li></ol>
+<p class="small">상단 동기화는 일반 Push를 사용하며 강제 Push를 제공하지 않습니다. 로컬 remote 연결을 제거하는 것은 서버의 저장소를 삭제하는 작업이 아닙니다.</p>
+</section>
+
+<section id="branch"><h2>05 · 브랜치 관리</h2>
+<ul><li><strong>전환:</strong> 상단 드롭다운에서 다른 브랜치를 선택하면 즉시 전환합니다. 현재 브랜치를 다시 선택하면 아무 작업도 하지 않습니다.</li><li><strong>새 브랜치:</strong> 현재 HEAD에서 분리해 만들고 새 브랜치로 이동합니다.</li><li><strong>이름 변경:</strong> 현재 로컬 브랜치의 이름을 변경합니다. 원격 브랜치 이름은 별도로 관리합니다.</li><li><strong>삭제:</strong> 현재 보고 있는 브랜치를 삭제합니다. 먼저 main → master → 다른 로컬 브랜치 순으로 이동 대상을 찾아 전환합니다. 로컬 브랜치가 하나뿐이면 삭제 버튼이 비활성화됩니다.</li></ul>
+<div class="caution"><strong>강제 삭제</strong>는 아직 합쳐지지 않은 커밋이 있는 브랜치도 삭제할 수 있어 체크할 때마다 경고합니다. <strong>연결된 원격 브랜치도 삭제</strong>는 upstream이 있을 때만 선택할 수 있으며 실제 원격 브랜치에도 영향을 줍니다.</div>
+<p>작업 파일 때문에 전환이 거부되면 변경을 커밋하거나 Stash한 뒤 다시 시도하세요. 로컬 삭제만 성공하고 원격 삭제가 실패했다면 결과 메시지를 확인하고 원격 상태를 다시 조회합니다.</p>
+</section>
+
+<section id="history"><h2>06 · 커밋 기록과 비교</h2>
+<p><strong>커밋 기록</strong> 탭에서 그래프, 커밋 메시지, 브랜치/태그, 작성자, 날짜를 확인합니다. 오른쪽 추가 열은 가로 스크롤로 볼 수 있습니다.</p>
+<ol><li>일반 검색에는 커밋 메시지를 입력합니다. 작성자·참조·파일 경로·날짜 조건은 <strong>상세 검색</strong>에서 지정합니다.</li><li>날짜는 <code>YYYY-MM-DD</code>로 직접 입력하거나 달력에서 선택합니다. <strong>초기화</strong>로 상세 조건을 비웁니다.</li><li><strong>100개 더 보기</strong>로 이전 이력을 추가합니다. 원하는 기록이 없으면 필터를 확인하세요.</li><li>행을 더블 클릭하거나 선택 후 <strong>비교 해제</strong> 오른쪽의 <strong>상세 보기</strong>를 누릅니다. 별도 창 왼쪽에서 커밋된 파일을 고르고 오른쪽에서 Diff를 확인합니다.</li><li>두 커밋을 비교하려면 비교 기준을 지정한 다음 다른 커밋을 선택합니다. 비교가 끝나면 <strong>비교 해제</strong>를 누릅니다. 병합 커밋은 부모를 선택해 비교할 수 있습니다.</li></ol>
+<p>커밋 상세 Diff는 읽기 전용이며 줄 선택 Stage 기능은 없습니다. 파일 이력과 Blame으로 특정 파일·줄이 어느 커밋에서 바뀌었는지 추적할 수 있습니다.</p>
+<p class="small">History 목록은 최대 5,000개, 그래프는 처음 1,000개까지 표시합니다. 더 큰 이력은 검색 범위를 좁혀 확인하세요.</p>
+</section>
+
+<section id="stash"><h2>07 · Stash와 파일 정리</h2>
+<p><strong>Stash · 작업 트리</strong>는 미완료 변경을 잠시 치우거나 파일을 정리할 때 사용합니다.</p>
+<ol><li>Stash 메시지를 적고, 새 파일도 보관하려면 미추적 파일 포함 옵션을 선택합니다.</li><li>보관 후 다른 브랜치 작업을 진행합니다.</li><li>목록에서 보관본의 변경 내용을 확인하고 <strong>Apply</strong> 또는 <strong>Pop</strong>으로 복원합니다.</li></ol>
+<div class="table-wrap"><table><thead><tr><th>기능</th><th>결과</th></tr></thead><tbody><tr><td>Apply</td><td>변경을 적용하고 Stash 목록에도 보관본을 남깁니다.</td></tr><tr><td>Pop</td><td>적용에 성공하면 보관본을 목록에서 제거합니다. 충돌이 발생하면 보관본을 유지합니다.</td></tr><tr><td>Drop / Clear</td><td>선택 보관본 또는 전체 목록을 제거합니다. 적용하는 기능이 아닙니다.</td></tr><tr><td>변경 폐기</td><td>선택한 파일을 Stage 또는 HEAD 기준으로 복원합니다. 실행 전 영향과 백업 안내를 확인하세요.</td></tr><tr><td>Clean</td><td>선택한 미추적 일반 파일을 미리보기 후 삭제합니다.</td></tr><tr><td>파일 관리</td><td>추적 파일 삭제·이름 변경, 최상위 .gitignore 편집을 제공합니다.</td></tr></tbody></table></div>
+<div class="note">Unstage는 커밋 준비만 취소합니다. <strong>변경 폐기와 Clean은 파일 내용에 영향을 주는 작업</strong>이므로 구분해서 사용하세요.</div>
+</section>
+
+<section id="merge"><h2>08 · 병합과 충돌 해결</h2>
+<ol><li>병합 결과를 받을 브랜치로 먼저 전환합니다. 예를 들어 feature를 main에 합치려면 main을 엽니다.</li><li><strong>병합 · 충돌 해결</strong> 탭에서 비교·병합할 브랜치를 드롭다운으로 선택하고 변경 내용을 확인합니다.</li><li>미완료 변경을 정리한 뒤 병합을 실행합니다. 충돌이 없으면 결과를 확인합니다.</li><li>충돌 파일이 있으면 파일을 선택해 큰 3-way 편집창을 엽니다. 왼쪽 <strong>Base</strong>, 가운데 <strong>최종 결과</strong>, 오른쪽 <strong>Merge</strong> 내용을 비교합니다.</li><li>가운데 결과를 직접 편집하거나 파일 전체를 <strong>Base 파일 사용 / Merge 파일 사용 / 해당 파일 삭제</strong> 중 하나로 처리합니다.</li><li>해결 결과를 저장·Stage하고 다음 충돌 파일을 처리합니다. 모든 충돌을 해결한 뒤 <strong>Continue</strong>합니다. 진행 중인 병합을 취소하려면 <strong>Abort</strong>를 사용합니다.</li></ol>
+<div class="note">편집기의 Base는 현재 쪽 파일(stage 2)을 뜻하며 공통 조상 파일과는 다릅니다. Rebase 충돌에서는 각 쪽의 의미가 달라질 수 있으므로 실제 내용을 보고 선택하세요.</div>
+<p>이력이 양쪽으로 갈라져 동기화가 막혔다면 원격 추적 브랜치와 비교해 병합하고, 완료 후 다시 Fetch한 뒤 Push를 진행합니다.</p>
+</section>
+
+<section id="recovery"><h2>09 · 이력 수정과 복구</h2>
+<h3>커밋 우클릭 작업</h3><p>커밋 기록의 우클릭 메뉴에서 SHA 복사, 해당 위치에 브랜치·태그 만들기, 이동, Revert, Cherry-pick, Reset 등의 작업을 시작할 수 있습니다. Revert는 변경을 취소하는 새 커밋을 만들고, Cherry-pick은 선택 커밋의 변경을 현재 브랜치에 적용합니다. Reset은 브랜치 위치와 선택 방식에 따라 커밋 준비 상태·파일에 영향을 줍니다.</p>
+<h3>여러 커밋 정리 — Interactive rebase</h3><ol><li><strong>이력 수정 · 복구</strong>에서 기준 커밋을 지정하고 <strong>계획 읽기</strong>를 누릅니다. 기준 이후의 커밋을 편집합니다.</li><li>오래된 커밋부터 표시된 행의 순서와 동작을 지정합니다.</li><li><strong>계획 확인 후 실행</strong>으로 시작합니다. Edit로 멈췄다면 변경·Stage·Amend 후 Continue합니다. 충돌은 편집기로 해결하고 계속하거나 Abort합니다.</li></ol>
+<div class="table-wrap"><table><thead><tr><th>동작</th><th>의미</th></tr></thead><tbody><tr><td>Pick / Reword</td><td>그대로 적용 / 메시지만 변경</td></tr><tr><td>Edit</td><td>해당 커밋에서 멈춰 수정</td></tr><tr><td>Squash / Fixup</td><td>앞 커밋에 변경과 메시지를 합침 / 변경만 합침</td></tr><tr><td>Drop</td><td>해당 커밋을 계획에서 제외</td></tr></tbody></table></div>
+<p class="small">현재 계획 편집은 병합 커밋이 없는 1~200개 커밋을 대상으로 합니다. 공유한 이력을 변경하면 다른 사람의 작업과 원격 이력에도 영향을 줄 수 있습니다.</p>
+<h3>Amend나 이력 변경을 잘못했다면</h3><ol><li><strong>복구 기록 읽기</strong>로 Reflog와 앱 복구 참조를 조회합니다.</li><li>원하는 이전 커밋의 메시지·패치를 확인하고 <strong>새 브랜치로 보존</strong>합니다. 현재 작업 파일을 바꾸지 않고 복구 지점을 남길 수 있습니다.</li><li>현재 브랜치로 필요한 변경을 가져오려면 보존한 브랜치와 비교한 뒤 병합하거나 필요한 커밋을 Cherry-pick합니다.</li></ol>
+<p><strong>현재 브랜치 되돌리기</strong>는 깨끗한 브랜치를 선택 커밋으로 옮기는 작업입니다. 삭제한 Stash는 <strong>Stash 목록으로 복원</strong>을 사용합니다. 커밋 복구 참조는 미커밋 파일 백업이 아니며, 모든 작업을 한 번에 되돌리는 자동 Undo는 제공하지 않습니다. 파일 백업은 복구 화면에서 폴더를 열어 내용을 확인한 뒤 수동 복원합니다.</p>
+</section>
+
+<section id="github"><h2>10 · GitHub 로그인과 Pull Request</h2>
+<h3>로그인과 저장소 복제</h3><ol><li><strong>GitHub</strong> 탭에서 <strong>GitHub 로그인</strong>을 누릅니다.</li><li>브라우저에서 로그인하고, 앱에 표시된 일회용 코드를 입력해 연결을 허용합니다. 브라우저가 열리지 않으면 <strong>인증 브라우저 열기</strong>를 사용합니다.</li><li>연결 후 계정과 저장소 목록이 자동 조회됩니다. 저장소를 선택해 <strong>선택 저장소 Clone</strong>을 누르고 저장할 폴더를 지정합니다.</li></ol>
+<p>계정 전환·로그아웃·Enterprise 호스트·로그인 도구 경로는 <strong>고급 설정</strong>에 있습니다. 로그인 후 Git HTTPS 인증 자동 연결은 기본으로 켜져 있으며 해당 호스트의 다른 로컬 저장소에도 적용됩니다. 앱 폴더를 이동했다면 고급 설정의 Git HTTPS 인증 연결을 다시 실행하세요.</p>
+<h3>Pull Request(PR)</h3><ol><li>GitHub 저장소를 선택하고 <strong>Pull Requests</strong>를 엽니다.</li><li>PR 목록에서 변경 파일, 커밋, 댓글, 리뷰, CI 검사 결과를 확인합니다.</li><li>생성할 때는 먼저 작업 브랜치를 Push해 원격에 올립니다. 변경을 받을 <strong>base</strong>와 변경을 보낼 <strong>head</strong>, 제목·설명을 지정합니다. 작업 중이라면 초안으로 생성할 수 있습니다.</li><li>댓글·승인·변경 요청·리뷰 요청을 사용합니다. 병합할 때는 Merge/Squash/Rebase 방식과 검사 결과를 확인합니다.</li></ol>
+<p>PR을 로컬로 체크아웃해 확인할 수도 있습니다. 권한·보호 브랜치·CI 상태에 따라 병합이 거부될 수 있습니다. 로컬 브랜치 병합과 GitHub PR 병합은 별도 작업입니다.</p>
+</section>
+
+<section id="tools"><h2>11 · Git Tools에서 명령 조립하기</h2>
+<p><strong>Git Tools → 전체 Git 명령 · 옵션 GUI</strong>는 명령과 옵션을 골라 실행할 문장을 만드는 화면입니다. 설치된 Git의 HTML 설명서를 사용합니다.</p>
+<ol><li>왼쪽 <strong>명령어</strong> 탭에서 명령 이름 또는 설명으로 검색합니다. 드롭다운은 <code>diff · 파일·커밋 사이의 변경사항 비교</code>처럼 표시합니다.</li><li><strong>명령 설명</strong> 또는 <strong>원문 전체</strong>를 읽고, 탭 오른쪽의 <strong>명령사용</strong>을 눌러 옵션 구성 화면으로 이동합니다. 이 버튼은 명령을 실행하지 않습니다.</li><li><strong>옵션</strong> 탭에서 필요한 옵션을 골라 <strong>선택 옵션 추가</strong>를 누릅니다. 설명은 목록에서 확인합니다.</li><li>오른쪽의 추가된 옵션에 값을 입력합니다. 고정 선택지가 있는 값은 드롭다운에서 고릅니다. 선택 값은 <strong>값 전달</strong> 체크로 포함 여부를 정합니다.</li><li>하위 명령이나 <strong>대상 값</strong>을 추가하고 ↑/↓로 실행 순서를 정합니다. 같은 옵션을 반복해 추가할 수도 있습니다.</li><li><strong>명령문에 추가</strong>를 눌러 아래 완성된 문장을 확인합니다.</li><li><strong>조회 / 실행 미리보기</strong> → <strong>확인 후 실행</strong> 순으로 진행합니다. 입력을 바꾸면 다시 조립·미리보기해야 합니다.</li></ol>
+<h3>옵션 값으로 파일·폴더 지정</h3><p>자유 입력 값 옆의 <strong>찾기…</strong>에서 아래 네 가지 중 하나를 선택하고 파일 또는 폴더를 지정합니다. 고정 선택값이나 값을 받지 않는 옵션에서는 찾기를 사용할 수 없습니다.</p>
+<div class="table-wrap"><table><thead><tr><th>선택</th><th>입력되는 값의 예</th></tr></thead><tbody><tr><td>파일 · 절대경로</td><td><code>C:/work/project/result.patch</code></td></tr><tr><td>파일 · 상대경로</td><td><code>result.patch</code> — 현재 저장소 기준</td></tr><tr><td>폴더 · 절대경로</td><td><code>C:/work/project/src</code></td></tr><tr><td>폴더 · 상대경로</td><td><code>src</code> — 현재 저장소 기준</td></tr></tbody></table></div>
+<p>새 출력 파일의 경로도 선택할 수 있습니다. 선택만으로 파일이 생성되거나 덮어써지지는 않습니다. 다른 드라이브는 절대경로를 사용하세요. 선택 취소는 기존 값을 유지합니다. 하단의 별도 바이너리 입출력 경로 필드는 없습니다.</p>
+<h3>예시: Diff 결과를 파일로 출력</h3><ol><li><code>diff</code>를 선택하고 <strong>명령사용</strong>을 누릅니다.</li><li><code>--output=&lt;file&gt;</code> 옵션을 추가합니다.</li><li>찾기에서 파일 · 상대경로를 선택하고 저장소 아래의 <code>result.patch</code> 경로를 지정합니다.</li><li>명령문에 추가하면 아래 형태로 표시됩니다. 미리보기에서 대상을 확인한 뒤 실행합니다.</li></ol><pre><code>git diff --output=result.patch</code></pre>
+<p>대상 경로가 <code>-</code>로 시작할 때는 <strong>경로 구분자 추가</strong>로 <code>--</code>를 넣고 그 뒤에 경로를 배치합니다. 경로·메시지 값에는 셸용 따옴표를 직접 감싸 넣을 필요가 없습니다. 완성 문장의 따옴표는 표시용이며 앱이 각 값을 별도 인자로 전달합니다.</p>
+<h3>한글 설명과 원문</h3><p>설명 언어의 기본값은 앱 언어입니다. 화면의 <strong>한국어 / English</strong>를 바꾸면 명령·옵션 설명이 즉시 전환되며 입력한 값과 명령문은 유지됩니다. 긴 설명은 자동 번역이고, 설치된 설명서 버전과 맞는 번역이 없으면 원문을 표시합니다. 옵션 탭에는 별도 설명 패널·원문 탭·전체 설명서 버튼이 없으며 원문 전체는 명령어 탭에서 확인합니다.</p>
+<div class="caution">실행할 명령과 대상 경로를 확인하세요. 파일을 쓰는 옵션은 기존 파일에 영향을 줄 수 있습니다. 모든 Git 옵션 조합에 전용 검증·파일 백업·자동 복구가 제공되는 것은 아닙니다. 원격 작업은 전용 동기화 화면의 제한을 따릅니다.</div>
+</section>
+
+<section id="advanced"><h2>12 · 그 밖의 Git Tools</h2>
+<p>자주 쓰는 고급 작업은 명령을 직접 조립하기 전에 기능별 화면에서 찾아보세요. 각 화면의 입력과 실행 전 확인에 따라 진행합니다.</p>
+<div class="table-wrap"><table><thead><tr><th>기능군</th><th>사용하는 상황</th></tr></thead><tbody><tr><td>태그·서명</td><td>릴리스 지점을 표시하고 태그 게시·삭제, 서명 태그·서명 검증을 수행합니다. 서명 키 환경은 별도 준비가 필요합니다.</td></tr><tr><td>Worktree</td><td>한 저장소를 여러 작업 폴더로 열어 브랜치를 나누어 작업합니다. 작업 트리 추가·이동·잠금·제거·복구 기능을 제공합니다.</td></tr><tr><td>Bisect</td><td>정상/문제 커밋을 기준으로 문제가 시작된 커밋을 좁힙니다. 자동 검사 스크립트 실행은 현재 범위에 포함되지 않습니다.</td></tr><tr><td>내보내기·패치</td><td>ZIP·Bundle·패치로 내용을 내보내거나 패치를 적용합니다.</td></tr><tr><td>Notes·Replace</td><td>커밋에 메모를 붙이거나 객체를 대신 참조하게 하는 고급 작업을 수행합니다.</td></tr><tr><td>Sparse checkout</td><td>작업 폴더에 표시할 경로 범위를 줄입니다.</td></tr><tr><td>Submodule·LFS</td><td>하위 저장소 또는 대용량 파일 관리 작업을 수행합니다. LFS는 해당 도구와 서버 지원이 필요합니다.</td></tr><tr><td>설정·점검·정리</td><td>Git 설정과 다중 값, 무결성 검사, 객체 정리·압축 등 유지보수 작업을 수행합니다.</td></tr></tbody></table></div>
+<p class="small">전체 명령 탐색과 옵션 폼을 제공하지만 모든 Git 명령의 모든 상황을 전용 GUI·자동 복구로 지원하는 것은 아닙니다. 설치된 Git 버전·설명서와 추가 도구에 따라 목록과 실행 가능 범위가 달라집니다.</p>
+</section>
+
+<section id="ssh"><h2>13 · SSH 원격 작업공간</h2>
+<p>Workspace의 <strong>SSH 원격 작업공간</strong>에서 서버의 저장소를 별도 창으로 관리합니다. 로컬 저장소 화면 전체를 원격으로 바꾸는 기능은 아닙니다.</p>
+<ol><li>Windows OpenSSH Client와 서버의 Python 3.8 이상·Git 2.31 이상을 준비합니다. 현재는 POSIX 서버를 대상으로 합니다.</li><li>접속 프로필에 실제 호스트·포트·사용자·키 경로와 허용할 저장소 경로 범위를 지정합니다.</li><li>서버 호스트 키를 확인하고 연결한 뒤 원격 저장소를 선택합니다.</li><li>원격 파일 편집, Stage/Unstage, 커밋, 브랜치, Fetch/Pull/Push, Diff·History의 기본 작업을 사용합니다.</li></ol>
+<p>서버에서 원격 Git 저장소에 접근할 인증 수단은 서버에 준비되어 있어야 합니다. 로컬 GitHub 로그인만으로 서버 인증이 설정되지는 않습니다. 현재 SSH config의 Host 별칭·ProxyJump, 비밀번호/askpass, 원격 PR·전체 고급 Git Tools·3-way 편집은 지원 범위에 포함되지 않습니다.</p>
+<div class="caution"><strong>SSH 연결 종료는 이미 시작한 원격 쓰기의 취소를 보장하지 않습니다.</strong> 연결이 끊겼다면 재연결 후 상태와 마지막 작업 결과를 확인하고, 같은 쓰기를 바로 반복하지 마세요.</div>
+<p class="small">실제 서버별 인증·네트워크 차이는 추가 검증이 필요합니다. 먼저 별도의 테스트 저장소로 환경을 확인하세요.</p>
+</section>
+
+<section id="settings"><h2>14 · 설정·작업 중단·로그</h2>
+<ul><li><strong>앱 설정 · 진단:</strong> 한국어·English·운영체제 언어를 선택합니다. 앱 전체 언어는 다음 실행부터 적용됩니다. Git Tools의 설명 언어 선택만 즉시 적용됩니다.</li><li><strong>현재작업 중단:</strong> 상단 새로고침·동기화 오른쪽에 있습니다. 조회·Fetch·Clone 등 중단 가능한 작업에 사용합니다. 커밋·병합 같은 쓰기는 강제로 중단하지 않습니다.</li><li><strong>작업 상태 · 복구:</strong> 진행 중인 작업, 충돌, 잠금, 시간 제한과 Continue/Abort를 확인합니다. 버튼이 잠겨 있으면 진행 작업과 오류를 먼저 확인하세요.</li><li><strong>작업 로그:</strong> 버튼·메뉴 행동과 뒤따르는 Git 명령을 시간순으로 확인합니다. 최근 2,000줄을 유지합니다.</li><li><strong>진단 보고서 내보내기:</strong> 오류 조사용 JSON을 저장합니다. 진단 보관을 켜면 최근 7일·최대 500건을 유지합니다. 지우기 기능은 앱 로그·진단 기록을 정리하며 Git 이력은 지우지 않습니다.</li></ul>
+<p>작업 중에는 앱 종료가 제한될 수 있습니다. 쓰기 작업이 오래 걸리면 상태 화면의 진행 문구와 인증 대기 여부를 확인하세요. 로그에는 알려진 민감정보를 가리는 처리가 있지만 공유 전 내용은 직접 확인하는 것이 좋습니다.</p>
+</section>
+
+<section id="trouble"><h2>15 · 자주 막히는 상황</h2>
+<details open><summary>수정한 파일이 보이지 않아요.</summary><p>현재 저장소 경로를 확인하고 로컬파일 새로고침을 누르세요. 파일 목록이 접혀 있다면 ▸로 펼칩니다. 새 파일이 .gitignore에 포함되어 있는지도 확인하세요.</p></details>
+<details open><summary>체크했는데 커밋이 안 돼요.</summary><p>체크는 작업 대상을 고르는 기능입니다. 먼저 Stage해서 커밋할 파일 목록에 넣어야 합니다. 제목과 작성자 설정도 확인하세요.</p></details>
+<details open><summary>Push가 아니라 Fetch만 보여요.</summary><p>새 작업 문맥에서는 원격 비교가 먼저 필요합니다. Fetch 후 버튼 상태를 확인하세요. 원격 또는 upstream이 없다면 원격 · 브랜치 연결에서 설정합니다.</p></details>
+<details open><summary>Pull 또는 브랜치 전환이 거부돼요.</summary><p>미완료 변경을 커밋하거나 Stash하세요. 충돌·진행 중인 Merge/Rebase·잠금이 있다면 작업 상태 · 복구에서 확인합니다. 잠금 파일을 임의로 삭제하지 말고 다른 Git 작업이 실행 중인지 먼저 확인하세요.</p></details>
+<details open><summary>Git Tools에 옵션이 없어요.</summary><p>설치된 Git의 HTML 설명서가 필요합니다. Git 환경을 확인하고 해당 설명서가 포함된 Git 설치인지 확인하세요. 일부 복합 표기는 자동으로 옵션 행으로 바꾸지 않습니다.</p></details>
+<details open><summary>경로 선택을 취소했는데 실행 준비 상태가 남아 있어요.</summary><p>취소하면 기존 입력을 유지하므로 정상입니다. 경로를 실제로 바꾸면 명령문과 미리보기가 무효화되어 다시 조립·확인해야 합니다.</p></details>
+<details open><summary>GitHub 로그인은 됐는데 Push가 안 돼요.</summary><p>원격 주소와 프로토콜, Git 인증 연결, 대상 저장소 권한을 확인하세요. SSH 주소를 쓰는 저장소는 SSH 인증이 필요할 수 있습니다. 계정 로그인과 Git 작성자 설정도 서로 다른 항목입니다.</p></details>
+<details open><summary>Diff나 기록이 잘려 보이거나 조회가 중단돼요.</summary><p>신규 파일 미리보기와 Diff·History 조회에는 8 MiB 제한이 있습니다. 파일·날짜 등으로 범위를 좁히세요. 바이너리나 지원하지 않는 파일 유형은 텍스트 Diff·줄 선택으로 처리할 수 없습니다.</p></details>
+</section>
+
+<section id="glossary"><h2>16 · 용어 사전</h2>
+<div class="table-wrap"><table><thead><tr><th>용어</th><th>쉽게 말하면</th></tr></thead><tbody><tr><td>저장소 / Repository</td><td>파일과 변경 이력을 Git으로 관리하는 공간</td></tr><tr><td>작업 트리 / Working tree</td><td>현재 PC 또는 서버에서 실제로 편집하는 파일들</td></tr><tr><td>Index / Stage</td><td>다음 커밋에 포함할 내용을 준비하는 영역</td></tr><tr><td>Commit</td><td>준비한 변경 내용과 메시지를 기록한 이력 단위</td></tr><tr><td>Branch</td><td>작업 흐름을 가리키는 이름. 여러 기능을 나누어 작업할 때 사용</td></tr><tr><td>HEAD</td><td>현재 체크아웃한 위치. 보통 현재 브랜치의 마지막 커밋</td></tr><tr><td>Detached HEAD</td><td>브랜치 이름 대신 특정 커밋에 직접 머무는 상태. 새 작업을 보존하려면 브랜치를 만드는 것이 좋음</td></tr><tr><td>Remote / origin</td><td>다른 저장소에 연결한 이름 / 흔히 사용하는 기본 연결 이름</td></tr><tr><td>Upstream</td><td>현재 로컬 브랜치가 비교·동기화할 원격 브랜치</td></tr><tr><td>Diff</td><td>두 상태 사이에서 추가·삭제·수정된 내용</td></tr><tr><td>Merge / Conflict</td><td>두 이력을 합치는 작업 / Git이 자동으로 합칠 수 없어 사람이 판단해야 하는 변경</td></tr><tr><td>Stash</td><td>아직 커밋하지 않은 변경을 잠시 보관하는 기능</td></tr><tr><td>Reflog</td><td>HEAD나 브랜치가 이전에 어디를 가리켰는지 남긴 로컬 기록</td></tr><tr><td>PR / Pull Request</td><td>내 브랜치의 변경을 다른 브랜치로 합쳐 달라고 제안하고 검토받는 GitHub 협업 단위</td></tr></tbody></table></div>
+</section>
+<footer>GitCanvas 사용 설명서 · 2026-09-15 기준 Windows 프로토타입과 최신 UI 반영.<br>이 문서는 사용 방법을 설명합니다. 실제 서버·인증 환경 및 모든 고급 Git 조합의 동작을 보장하는 범위 명세는 아닙니다.</footer>
+</main>
+</div>
+<script>
+(() => {
+  const sections = [...document.querySelectorAll('main section')];
+  const search = document.getElementById('search');
+  const status = document.getElementById('search-status');
+  const empty = document.getElementById('empty');
+  const texts = sections.map(section => section.textContent.toLocaleLowerCase());
+  function filter() {
+    const words = search.value.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+    let count = 0;
+    sections.forEach((section, index) => { section.hidden = !words.every(word => texts[index].includes(word)); if (!section.hidden) count++; });
+    empty.hidden = count !== 0;
+    status.textContent = words.length ? `${sections.length}개 장 중 ${count}개 표시` : '';
+  }
+  search.addEventListener('input', filter);
+  document.getElementById('clear').addEventListener('click', () => {search.value = ''; filter(); search.focus();});
+  document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', () => { search.value = ''; filter(); }));
+  window.addEventListener('hashchange', () => {search.value = ''; filter();});
+  document.getElementById('print').addEventListener('click', () => window.print());
+  let closedDetails = [];
+  window.addEventListener('beforeprint', () => {closedDetails = [...document.querySelectorAll('details:not([open])')]; closedDetails.forEach(item => item.open = true);});
+  window.addEventListener('afterprint', () => {closedDetails.forEach(item => item.open = false); closedDetails = [];});
+  const theme = document.getElementById('theme');
+  function setTheme(dark) { document.documentElement.dataset.theme = dark ? 'dark' : 'light'; theme.setAttribute('aria-pressed', String(dark)); }
+  let saved = null;
+  try { saved = localStorage.getItem('gitcanvas-guide-theme'); } catch (_) {}
+  setTheme(saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches);
+  theme.addEventListener('click', () => { const dark = document.documentElement.dataset.theme !== 'dark'; setTheme(dark); try {localStorage.setItem('gitcanvas-guide-theme', dark ? 'dark' : 'light');} catch (_) {} });
+})();
+</script>
+</body>
+</html>

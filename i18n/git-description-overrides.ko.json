@@ -1,0 +1,8 @@
+{
+  "Synonym for --dirstat=files,<param>,....": "--dirstat=files,<param>,...와 같은 의미입니다.",
+  "Skip and remove all lines starting with a comment character (core.commentChar, default #).": "주석 문자(core.commentChar, 기본값 #)로 시작하는 모든 줄을 건너뛰고 제거합니다.",
+  "Don’t actually add the file(s), just show if they exist and/or will be ignored.": "파일을 실제로 추가하지 않고, 파일이 존재하는지 또는 무시될 대상인지만 보여줍니다.",
+  "Be verbose.": "처리 과정과 결과를 자세히 출력합니다.",
+  "Allow adding otherwise ignored files.": "무시하도록 설정된 파일도 추가할 수 있게 합니다.",
+  "Continue listing the history of a file beyond renames (works only for a single file).": "파일 이름이 바뀌기 전의 이력까지 이어서 표시합니다. 파일 하나를 조회할 때만 사용할 수 있습니다."
+}

@@ -1,0 +1,104 @@
+# Install in the repository root's .github/workflows/gitcanvas.yml.
+# For a standalone checkout change PROJECT_DIR to '.'.
+name: GitCanvas build and packages
+on:
+  workflow_dispatch:
+  push:
+    paths: ['git-gui/**', '.github/workflows/gitcanvas.yml']
+  pull_request:
+    paths: ['git-gui/**', '.github/workflows/gitcanvas.yml']
+permissions:
+  contents: read
+env:
+  PROJECT_DIR: git-gui
+jobs:
+  macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x86_64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Build dependencies and matching Qt SDK
+        run: |
+          brew install cmake ninja git gh
+          python3 -m venv "$RUNNER_TEMP/qt-installer"
+          "$RUNNER_TEMP/qt-installer/bin/pip" install aqtinstall==3.3.0
+          "$RUNNER_TEMP/qt-installer/bin/python" -m aqt install-qt mac desktop 6.8.3 clang_64 -O "$RUNNER_TEMP/Qt"
+          git clone --depth 1 --filter=blob:none --sparse --branch v6.8.3 https://github.com/qt/qtbase.git "$RUNNER_TEMP/qt-notices"
+          git -C "$RUNNER_TEMP/qt-notices" sparse-checkout set LICENSES src/3rdparty
+      - name: Build, test, and package (ad hoc signature; no publishing)
+        run: |
+          export QT_ROOT="$RUNNER_TEMP/Qt/6.8.3/macos"
+          export QT_LICENSE_DIR="$RUNNER_TEMP/qt-notices"
+          export GITHUB_CLI_BINARY="$(command -v gh)"
+          export GITHUB_CLI_LICENSE="$(brew --prefix gh)/LICENSE"
+          bash "$PROJECT_DIR/scripts/package-macos.sh"
+      - name: Preserve results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: gitcanvas-macos-${{ matrix.arch }}
+          path: |
+            ${{ env.PROJECT_DIR }}/out/macos-${{ matrix.arch }}/*.zip
+            ${{ env.PROJECT_DIR }}/out/macos-${{ matrix.arch }}/SHA256SUMS
+            ${{ env.PROJECT_DIR }}/out/macos-${{ matrix.arch }}/build-environment.txt
+            ${{ env.PROJECT_DIR }}/out/macos-${{ matrix.arch }}/runtime-inventory.json
+            ${{ env.PROJECT_DIR }}/build-macos-${{ matrix.arch }}/*tests.txt
+            ${{ env.PROJECT_DIR }}/build-macos-${{ matrix.arch }}/*screenshot.png
+  ubuntu:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Build dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake ninja-build qt6-base-dev git python3 dpkg-dev gh file patchelf
+      - name: Build, test, and package
+        run: bash "$PROJECT_DIR/scripts/package-linux.sh"
+      - name: Preserve results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: gitcanvas-ubuntu
+          path: |
+            ${{ env.PROJECT_DIR }}/out/linux/*.AppImage
+            ${{ env.PROJECT_DIR }}/out/linux/*.zip
+            ${{ env.PROJECT_DIR }}/out/linux/SHA256SUMS
+            ${{ env.PROJECT_DIR }}/build-linux/*tests.txt
+            ${{ env.PROJECT_DIR }}/build-linux/*screenshot.png
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: msys2/setup-msys2@v2
+        id: msys
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-qt6-base
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-python
+      - name: Build, test, and package
+        shell: pwsh
+        run: '& "$env:PROJECT_DIR/scripts/package-windows.ps1" -QtRoot "${{ steps.msys.outputs.msys2-location }}/ucrt64"'
+      - name: Preserve results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: gitcanvas-windows
+          path: |
+            ${{ env.PROJECT_DIR }}/out/*.zip
+            ${{ env.PROJECT_DIR }}/out/*.sha256
+            ${{ env.PROJECT_DIR }}/out/windows-dependency-sources/*
+            ${{ env.PROJECT_DIR }}/build/*tests.txt
+            ${{ env.PROJECT_DIR }}/build/*screenshot.png

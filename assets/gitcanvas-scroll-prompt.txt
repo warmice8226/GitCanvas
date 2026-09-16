@@ -1,0 +1,5 @@
+Created with the built-in image_gen tool, 2026-09-15.
+No stock image was supplied as a reference.
+PNG is the generated source; ICO contains 16, 24, 32, 48, 64, 128 and 256 pixel versions.
+
+Use case: logo-brand. Asset type: Windows application icon for GitCanvas. Create one original simple stylized parchment scroll icon, centered on a square canvas with a genuinely transparent background. A warm ivory parchment sheet with clearly curled top and bottom edges, rounded clean silhouette, dark blue-gray thick outlines and restrained soft shading, a small teal rolled edge accent. Friendly polished flat illustration, legible at 32 pixels. Mostly front-facing, compact balanced proportions, fills about 80 percent of canvas. No text, no lettering, no watermark, no enclosing tile, no surrounding objects, no fake transparency checkerboard. Design independently without referencing any existing stock image.
